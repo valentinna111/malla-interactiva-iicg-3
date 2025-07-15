@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Interactiva IICG 2024</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #fff0f5;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    h1 {
+      text-align: center;
+      color: #d63384;
+    }
+    .semestre {
+      display: inline-block;
+      vertical-align: top;
+      background: #ffe0ec;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      min-width: 250px;
+      white-space: normal;
+      box-shadow: 0 0 10px #ccc;
+    }
+    .semestre h2 {
+      border-bottom: 1px solid #d63384;
+    }
+    .ramo {
+      background: #f8bbd0;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+      opacity: 0.4;
+      cursor: not-allowed;
+      transition: 0.3s;
+    }
+    .ramo.desbloqueado {
+      opacity: 1;
+      cursor: pointer;
+    }
+    .ramo.aprobado {
+      background: #f06292;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva IICG 2024</h1>
+  <div id="malla"></div>
+  <script>
+    const ramos = [
+      {"codigo": "MAT101", "nombre": "Matem\u00e1tica para los Negocios I", "semestre": 1, "prerrequisitos": []},
+      {"codigo": "COM101", "nombre": "Comunicaci\u00f3n en Espa\u00f1ol", "semestre": 1, "prerrequisitos": []},
+      {"codigo": "CON101", "nombre": "Contabilidad I", "semestre": 1, "prerrequisitos": []},
+      {"codigo": "INF101", "nombre": "Introducci\u00f3n a la Carrera", "semestre": 1, "prerrequisitos": []},
+      {"codigo": "ECO101", "nombre": "Introducci\u00f3n a la Econom\u00eda", "semestre": 1, "prerrequisitos": []},
+      {"codigo": "MAT102", "nombre": "Matem\u00e1tica para los Negocios II", "semestre": 2, "prerrequisitos": ["MAT101"]},
+      {"codigo": "COM102", "nombre": "Comunicaci\u00f3n en Ingl\u00e9s I", "semestre": 2, "prerrequisitos": []},
+      {"codigo": "CON102", "nombre": "Contabilidad II", "semestre": 2, "prerrequisitos": ["CON101"]},
+      {"codigo": "INF102", "nombre": "Sistemas de Informaci\u00f3n para la Gesti\u00f3n", "semestre": 2, "prerrequisitos": []},
+      {"codigo": "GES101", "nombre": "Gesti\u00f3n de Empresas y Liderazgo", "semestre": 2, "prerrequisitos": []},
+      {"codigo": "MIC201", "nombre": "Microeconom\u00eda", "semestre": 3, "prerrequisitos": ["ECO101"]},
+      {"codigo": "GES201", "nombre": "Gesti\u00f3n de Personas y Equipos", "semestre": 3, "prerrequisitos": []},
+      {"codigo": "FIN201", "nombre": "Gesti\u00f3n Financiera de Corto Plazo", "semestre": 3, "prerrequisitos": ["CON102"]},
+      {"codigo": "EST201", "nombre": "Inferencia Estad\u00edstica", "semestre": 3, "prerrequisitos": ["MAT102"]},
+      {"codigo": "COM201", "nombre": "Comunicaci\u00f3n en Ingl\u00e9s II", "semestre": 3, "prerrequisitos": ["COM102"]},
+      {"codigo": "MAC301", "nombre": "Macroeconom\u00eda", "semestre": 4, "prerrequisitos": ["MIC201"]},
+      {"codigo": "DAT301", "nombre": "An\u00e1lisis de Datos I", "semestre": 4, "prerrequisitos": ["EST201"]},
+      {"codigo": "LEG301", "nombre": "Legislaci\u00f3n para los Negocios", "semestre": 4, "prerrequisitos": []},
+      {"codigo": "ECO302", "nombre": "Econometr\u00eda", "semestre": 4, "prerrequisitos": ["EST201", "MIC201"]},
+      {"codigo": "TEO301", "nombre": "Fundamentos Teol\u00f3gicos", "semestre": 4, "prerrequisitos": []},
+      {"codigo": "FIN401", "nombre": "Finanzas e Inversiones", "semestre": 5, "prerrequisitos": ["FIN201"]},
+      {"codigo": "PRA401", "nombre": "Pr\u00e1ctica Inicial", "semestre": 5, "prerrequisitos": ["GES101"]},
+      {"codigo": "COS401", "nombre": "Gesti\u00f3n de Costos Avanzada", "semestre": 5, "prerrequisitos": ["CON102"]},
+      {"codigo": "LOG401", "nombre": "L\u00f3gica y Programaci\u00f3n para Negocios", "semestre": 5, "prerrequisitos": []},
+      {"codigo": "SOST401", "nombre": "Gesti\u00f3n y Sostenibilidad", "semestre": 5, "prerrequisitos": []},
+      {"codigo": "MOD501", "nombre": "Modelamiento de Procesos de Negocio", "semestre": 6, "prerrequisitos": ["INF102"]},
+      {"codigo": "FIN501", "nombre": "Finanzas Corporativas", "semestre": 6, "prerrequisitos": ["FIN401"]},
+      {"codigo": "DAT501", "nombre": "An\u00e1lisis de Datos II", "semestre": 6, "prerrequisitos": ["DAT301"]},
+      {"codigo": "ORG501", "nombre": "Planificaci\u00f3n y Dise\u00f1o Organizacional", "semestre": 6, "prerrequisitos": []},
+      {"codigo": "VIDA501", "nombre": "Vida Universitaria", "semestre": 6, "prerrequisitos": []},
+      {"codigo": "MKT601", "nombre": "Direcci\u00f3n Estrat\u00e9gica de Marketing", "semestre": 7, "prerrequisitos": ["GES201"]},
+      {"codigo": "INV601", "nombre": "Metodolog\u00eda de la Investigaci\u00f3n", "semestre": 7, "prerrequisitos": []},
+      {"codigo": "OPT601", "nombre": "Optativo de Profundizaci\u00f3n I", "semestre": 7, "prerrequisitos": []},
+      {"codigo": "ETI601", "nombre": "\u00c9tica Profesional", "semestre": 7, "prerrequisitos": []},
+      {"codigo": "ING601", "nombre": "Ingl\u00e9s para los Negocios", "semestre": 7, "prerrequisitos": ["COM201"]},
+      {"codigo": "EVA701", "nombre": "Evaluaci\u00f3n de Proyectos", "semestre": 8, "prerrequisitos": ["FIN501"]},
+      {"codigo": "EST701", "nombre": "Estrategia Empresarial", "semestre": 8, "prerrequisitos": ["MKT601"]},
+      {"codigo": "INV701", "nombre": "Investigaci\u00f3n Aplicada", "semestre": 8, "prerrequisitos": ["INV601"]},
+      {"codigo": "INT701", "nombre": "Inteligencia de Negocios", "semestre": 8, "prerrequisitos": ["DAT501"]},
+      {"codigo": "INT702", "nombre": "Control Interno", "semestre": 8, "prerrequisitos": ["COS401"]},
+      {"codigo": "CG801", "nombre": "Control de Gesti\u00f3n", "semestre": 9, "prerrequisitos": ["COS401", "INT701"]},
+      {"codigo": "DAT802", "nombre": "Gesti\u00f3n y Gobierno de Datos", "semestre": 9, "prerrequisitos": ["DAT501"]},
+      {"codigo": "PUB801", "nombre": "Sector P\u00fablico y Control de Gesti\u00f3n", "semestre": 9, "prerrequisitos": ["CG801"]},
+      {"codigo": "OPT801", "nombre": "Optativo de Profundizaci\u00f3n II", "semestre": 9, "prerrequisitos": []},
+      {"codigo": "CG901", "nombre": "Control de Gesti\u00f3n II", "semestre": 10, "prerrequisitos": ["CG801"]},
+      {"codigo": "AUD901", "nombre": "Auditor\u00eda de Sistemas de Informaci\u00f3n", "semestre": 10, "prerrequisitos": ["INF102", "CG801"]},
+      {"codigo": "PRA902", "nombre": "Pr\u00e1ctica Profesional", "semestre": 10, "prerrequisitos": ["CG901"]}
+    ];
+
+    const mallaDiv = document.getElementById("malla");
+    const ramosPorCodigo = {};
+
+    const semestres = [...new Set(ramos.map(r => r.semestre))].sort((a,b) => a - b);
+    semestres.forEach(function(sem) {
+      const div = document.createElement("div");
+      div.className = "semestre";
+      div.innerHTML = "<h2>Semestre " + sem + "</h2>";
+      ramos.filter(r => r.semestre === sem).forEach(function(ramo) {
+        const el = document.createElement("div");
+        el.className = "ramo";
+        el.innerText = ramo.nombre;
+        el.dataset.codigo = ramo.codigo;
+        el.onclick = function() { aprobarRamo(ramo.codigo); };
+        div.appendChild(el);
+        ramosPorCodigo[ramo.codigo] = el;
+      });
+      mallaDiv.appendChild(div);
+    });
+
+    function aprobarRamo(codigo) {
+      const el = ramosPorCodigo[codigo];
+      if (!el.classList.contains("desbloqueado")) return;
+      el.classList.add("aprobado");
+      ramos.forEach(function(r) {
+        if (r.prerrequisitos.includes(codigo)) {
+          const todosOk = r.prerrequisitos.every(function(p) {
+            return ramosPorCodigo[p].classList.contains("aprobado");
+          });
+          if (todosOk) {
+            ramosPorCodigo[r.codigo].classList.add("desbloqueado");
+          }
+        }
+      });
+    }
+
+    ramos.forEach(function(r) {
+      if (r.prerrequisitos.length === 0) {
+        ramosPorCodigo[r.codigo].classList.add("desbloqueado");
+      }
+    });
+  </script>
+</body>
+</html>
